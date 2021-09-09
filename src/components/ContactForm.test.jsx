@@ -1,8 +1,9 @@
 import React from "react";
-import { findByText, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import ContactForm from "./ContactForm";
+import { ErrorMessage } from "react-hook-form";
 
 test("renders without errors", () => {
   render(<ContactForm />);
@@ -75,9 +76,35 @@ test("renders ONE error message if user enters a valid first name and last name 
   expect(screen.getAllByTestId("error")).toHaveLength(1);
 });
 
-// test('renders "email must be a valid email address" if an invalid email is entered', async () => {
-
-// });
+test('renders "email must be a valid email address" if an invalid email is entered', async () => {
+  // Arrange
+  render(<ContactForm />);
+  // Act
+  // grab first name field
+  const firstNameInput = screen.getByPlaceholderText("Edd");
+  // type into first name field
+  userEvent.type(firstNameInput, "Leeroy");
+  // grab last name field
+  const lastNameInput = screen.getByPlaceholderText("Burke");
+  // type into last name field
+  userEvent.type(lastNameInput, "Jenkins!");
+  // grab email field
+  const emailInput = screen.getByPlaceholderText("bluebill1049@hotmail.com");
+  // type invalid email 'leeroy.jenkins'
+  userEvent.type(emailInput, "leeroy.jenkins");
+  // grab submit button
+  const submitButton = screen.getByRole("button");
+  // click submit button
+  userEvent.click(submitButton);
+  // Assert
+  await waitFor(() => {
+    screen.getByTestId("error");
+  });
+  // look for an error message with the word email in it somewhere
+  const errorMessage = new RegExp("email", "ig");
+  expect(screen.getByTestId("error")).toBeInTheDocument();
+  expect(screen.getByTestId("error")).toHaveTextContent(errorMessage);
+});
 
 // test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
 
