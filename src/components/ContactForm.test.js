@@ -20,9 +20,11 @@ test('renders the contact form header', ()=> {
     expect(header()).toHaveTextContent(/contact form/i);
 });
 
-// test('renders ONE error message if user enters less then 5 characters into firstname.', async () => {
-    
-// });
+test('renders ONE error message if user enters less then 5 characters into firstname.', () => {
+    render(<ContactForm/>);
+    const input = screen.getByLabelText('firstName');
+    expect(input).toBeInTheDocument()
+});
 
 // test('renders THREE error messages if user enters no values into any fields.', async () => {
     
