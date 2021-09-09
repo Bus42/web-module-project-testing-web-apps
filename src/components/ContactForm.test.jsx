@@ -38,9 +38,15 @@ test("renders ONE error message if user enters less than 5 characters into first
   expect(screen.getByText(errorMessageText)).toBeInTheDocument();
 });
 
-// test('renders THREE error messages if user enters no values into any fields.', async () => {
-
-// });
+test("renders THREE error messages if user enters no values into any fields.", async () => {
+  render(<ContactForm />);
+  const submitButton = screen.queryByRole("button");
+  userEvent.click(submitButton);
+  await waitFor(() => {
+    screen.getAllByTestId("error");
+  });
+  expect(screen.getAllByTestId("error")).toHaveLength(3);
+});
 
 // test('renders ONE error message if user enters a valid first name and last name but no email.', async () => {
 
