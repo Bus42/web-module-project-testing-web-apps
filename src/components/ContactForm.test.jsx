@@ -106,9 +106,31 @@ test('renders "email must be a valid email address" if an invalid email is enter
   expect(screen.getByTestId("error")).toHaveTextContent(errorMessage);
 });
 
-// test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
-
-// });
+test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
+  // Arrange
+  render(<ContactForm />);
+  // Act
+  // grab first name field
+  const firstNameInput = screen.getByPlaceholderText("Edd");
+  // type into first name field
+  userEvent.type(firstNameInput, "Leeroy");
+  // grab email field
+  const emailInput = screen.getByPlaceholderText("bluebill1049@hotmail.com");
+  // type invalid email 'leeroy.jenkins'
+  userEvent.type(emailInput, "leeroy@jenk.ins");
+  // grab submit button
+  const submitButton = screen.getByRole("button");
+  // click submit button
+  userEvent.click(submitButton);
+  // Assert
+  await waitFor(() => {
+    screen.getByTestId("error");
+  });
+  // look for an error message with the word lastname in it somewhere
+  const errorMessage = new RegExp("lastName", "ig");
+  expect(screen.getByTestId("error")).toBeInTheDocument();
+  expect(screen.getByTestId("error")).toHaveTextContent(errorMessage);
+});
 
 // test('renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.', async () => {
 
